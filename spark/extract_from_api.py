@@ -2,7 +2,10 @@ from spacetrack import SpaceTrackClient
 import pandas as pd
 from pyspark.sql import SparkSession, types
 
-def get_data():
+from pathlib import Path
+
+
+def download_data():
     st = SpaceTrackClient('hassansari4a@gmail.com', '9817377317NCELL')
     csvfile = st.satcat(format='csv')
     with open('my_file.csv', 'w') as my_file:
@@ -14,7 +17,8 @@ def create_spark_session():
     spark = SparkSession.builder.appName('SattelitesProject').getOrCreate()
     return spark
 
-def read_data(spark):
+def read_data():
+    spark = create_spark_session()
     dfspark = spark.read.format("csv") \
                    .option("delimiter", ",") \
                    .option("header", "true") \
@@ -27,6 +31,7 @@ def clean_data(dfspark):
     return dfspark
 
 def write_data(dfspark):
-    dfspark.coalesce(1).write.parquet("../data/satcatdata")
-    return
+    path = Path('../data/satcatdata')
+    dfspark.coalesce(1).write.parquet(path)
+    return path
 
