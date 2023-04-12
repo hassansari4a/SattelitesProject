@@ -1,0 +1,52 @@
+from pathlib import Path
+from spacetrack import SpaceTrackClient
+import pandas as pd
+
+from prefect import flow, task
+from prefect_gcp.cloud_storage import GcsBucket
+
+
+@task(retries=3)
+def get_satcat_data() -> pd.DataFrame:
+    """Read Taxi Data from Web into Pandas Dataframe"""
+    st = SpaceTrackClient('hassansari4a@gmail.com', '9817377317NCELL')
+    csvfile = st.satcat(format='csv')
+    with open('satcatdata.csv', 'w') as my_file:
+        my_file.write(csvfile)
+    df = pd.read_csv('satcatdata.csv')
+    return df
+
+@task(log_prints = True)
+def clean_df(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.drop(['COMMENT', 'COMMENTCODE', 'RCSVALUE', 'RCS_SIZE'], axis=1)
+    df['LAUNCH'] = pd.to_datetime(df['LAUNCH'])
+    df['DECAY'] = pd.to_datetime(df['DECAY'])
+    return df
+
+@task(log_prints = True)
+def write_local(df: pd.DataFrame) -> Path:
+    path = Path('data/satcatdata/satcatdata.csv')
+    df.to_csv(path, compression='gzip')
+    return path
+
+@task(log_prints = True)
+def write_gcs(path: Path) -> None:
+    """Uploading local parquet file to GCS"""
+    gcp_block = GcsBucket.load("satproject-storage-bucket")
+    gcp_block.upload_from_path( # type: ignore
+        from_path = path,
+        to_path = path
+    )
+    return
+
+@flow()
+def etl_web_to_gcs() -> None:
+    """The Main ETL Function"""
+    # df = get_satcat_data()
+    df = pd.read_csv('prefect/flows/satcatdata.csv')
+    df = clean_df(df)
+    path = write_local(df)
+    write_gcs(path)
+
+if __name__ == "__main__":
+    etl_web_to_gcs()
