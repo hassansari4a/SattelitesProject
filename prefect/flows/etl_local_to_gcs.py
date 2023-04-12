@@ -1,47 +1,55 @@
 from pathlib import Path
+from spacetrack import SpaceTrackClient
+import pandas as pd
+import configparser
+
 
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
 
-from ...spark.extract_from_api import * 
 
-@task(retries=3)
-def get_satcat_data():
-    """Read Taxi Data from Web into Pandas Dataframe"""
-    download_data()
-    df = read_data()
+@task(log_prints = True, retries=3)
+def get_satcat_data(username: str, password: str) -> pd.DataFrame:
+    """Read SATCAT Data from Web into Pandas Dataframe"""
+    st = SpaceTrackClient(username, password)
+    
+    csvfile = st.satcat(format='csv')
+    with open('satcatdata.csv', 'w') as my_file:
+        my_file.write(csvfile)
+    df = pd.read_csv('satcatdata.csv')
     return df
 
 @task(log_prints = True)
-def clean_df(df):
-    return clean_data(df)
+def clean_df(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.drop(['COMMENT', 'COMMENTCODE', 'RCSVALUE', 'RCS_SIZE'], axis=1)
+    df['LAUNCH'] = pd.to_datetime(df['LAUNCH'])
+    df['DECAY'] = pd.to_datetime(df['DECAY'])
+    return df
 
 @task(log_prints = True)
-def write_local(df) -> Path:
-    """Write DataFrame out as a parquet file"""
-    path = write_data(df) 
-    # pathdir = Path(f"data/{color}")
-    # if not os.path.exists(pathdir):
-    #     os.makedirs(pathdir)
-    # path = Path(f"data/{color}/{dataset_file}.parquet")
-    # df.to_parquet(path, compression="gzip")
+def write_local(df: pd.DataFrame) -> Path:
+    path = Path('data/satcatdata/satcatdata.csv')
+    df.to_csv(path, compression='gzip')
     return path
 
 @task(log_prints = True)
 def write_gcs(path: Path) -> None:
     """Uploading local parquet file to GCS"""
-    gcp_block = GcsBucket.load("satcatgcs")
+    gcp_block = GcsBucket.load("satproject-storage-bucket")
     gcp_block.upload_from_path( # type: ignore
-        from_path=f'{path}/*.parquet',
-        to_path='data/satcatdata'
+        from_path = path,
+        to_path = path
     )
     return
 
 @flow()
 def etl_web_to_gcs() -> None:
     """The Main ETL Function"""
+    config = configparser.ConfigParser()
+    config.read('config.ini')
 
-    df = get_satcat_data()
+    df = get_satcat_data(config['spacetrack']['username'], config['spacetrack']['password'])
+    # df = pd.read_csv('prefect/flows/satcatdata.csv')
     df = clean_df(df)
     path = write_local(df)
     write_gcs(path)
