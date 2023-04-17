@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: staging
+    database: idyllic-aspect-382707
+    schema: sat_data_all
+
+    tables:
+      - name: satcatdata
