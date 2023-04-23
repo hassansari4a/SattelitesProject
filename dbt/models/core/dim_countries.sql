@@ -9,8 +9,7 @@ WITH geocodes AS (
 SELECT
     cl.country_id AS country_id,
     cl.country AS country,
-    {{ get_geocode_unmatched('g.country_code') }} as ge0_code,
-    g.country_code AS country_geo_code
+    {{ get_geocode_unmatched('g.country_code') }} as geo_code
 FROM 
 {{ ref("country_lookup") }} as cl
 LEFT JOIN
