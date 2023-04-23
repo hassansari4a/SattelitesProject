@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: dim_countries
+    constraints:
+      - type: primary_key
+        columns: [country_id]
+        name: primary_key_constraint_countries
+  - name: dim_object
+    constraints:
+      - type: primary_key
+        columns: [object_id]
+        name: primary_key_constraint_object
+  - name: fact_sastcat
+    constraints:
+      - type: primary_key
+        columns: [sat_id]
+        name: primary_key_constraint_fact_satcat
+      - type: unique
+        columns: [intldes_id, norad_id]
+      
+
