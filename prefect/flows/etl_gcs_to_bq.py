@@ -3,13 +3,17 @@ import pandas as pd
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
 from prefect_gcp import GcpCredentials
+import os
+
+import schema
 
 @task(retries = 3)
 def extract_from_gcs() -> Path:
     gcs_path = f"data/satcatdata/satcatdata.csv"
     gcs_block = GcsBucket.load("satproject-storage-bucket")
-    gcs_block.get_directory(from_path = gcs_path, local_path = f"data/tmp")
-    return Path(f"data/tmp/{gcs_path}")
+    local_path = path = os.path.abspath('/app/data/tmp')
+    gcs_block.get_directory(from_path = gcs_path, local_path = local_path)
+    return Path(f"{local_path}/{gcs_path}")
 
 @task()
 def read_data(path: Path) -> pd.DataFrame:
@@ -20,24 +24,27 @@ def read_data(path: Path) -> pd.DataFrame:
     return df
 
 @task()
-def write_bq(df: pd.DataFrame) -> None:
+def write_bq(df: pd.DataFrame, table_schema: list[dict[str, str]]) -> None:
     """Write Dataframe into BigQuery"""
     gcp_credentials_block = GcpCredentials.load("sat-gcp-credendials")
+
     df.to_gbq(
         destination_table= "sat_data_all.satcatdata",
         project_id= "idyllic-aspect-382707",
         credentials= gcp_credentials_block.get_credentials_from_service_account(),
         chunksize= 500_000,
+        table_schema= table_schema,
         if_exists= "append"
     )
 
 @flow()
 def etl_gcs_to_bq():
     """Main ETL flow to load data into Big Query"""
+    table_schema = schema.schema
     path = extract_from_gcs()
     print(path)
     df= read_data(path )
-    write_bq(df)
+    write_bq(df, table_schema)
 
 if __name__ == "__main__":
     etl_gcs_to_bq()
