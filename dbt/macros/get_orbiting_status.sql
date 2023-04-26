@@ -3,6 +3,8 @@
 #}
 {% macro get_orbiting_status(decay_date) -%}
 
-case when  {{ decay_date }} is null then 'Y' when  {{ decay_date }} is not null then 'N' end
+CASE
+    WHEN {{ decay_date }} IS NULL THEN 'Y' WHEN {{ decay_date }} IS NOT NULL THEN 'N'
+END
 
 {%- endmacro %}
