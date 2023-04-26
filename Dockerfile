@@ -8,16 +8,22 @@ RUN pip install -r requirements.txt --trusted-host pypi-python.org --no-cache-di
 COPY . /app
 WORKDIR /app
 
-# Set the API URL as an environment variable
-ENV PREFECT__CLOUD__API="https://api.prefect.cloud/api/accounts/d0d666b0-1c14-4d7a-99cc-204d7c584a02/workspaces/cdf7e9e9-954"
+COPY setup.sh .
 
+RUN chmod +x setup.sh
+
+ARG PREFECT_CLOUD_API_KEY
+ARG PREFECT_WORKSPACE
+
+ENV PREFECT_CLOUD_API_KEY=$PREFECT_CLOUD_API_KEY
+ENV PREFECT_WORKSPACE=$PREFECT_WORKSPACE
+
+ENTRYPOINT [ "./setup.sh" ]
 # Copy entrypoint script
-COPY entrypoint.sh /entrypoint.sh
+
 
 # Set the entrypoint script as the container's entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
-
-# COPY prefect/flows /opt/prefect/flows
+# ENTRYPOINT ["/entrypoint.sh"]
 
 # ENV PREFECT_API_URL=https://api.prefect.cloud/api/accounts/d0d666b0-1c14-4d7a-99cc-204d7c584a02/workspaces/cdf7e9e9-954
 
