@@ -2,8 +2,8 @@ from pathlib import Path
 from spacetrack import SpaceTrackClient
 import pandas as pd
 import configparser
-
-
+import subprocess
+import os
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
 
@@ -13,7 +13,7 @@ def get_satcat_data(username: str, password: str) -> pd.DataFrame:
     """Read SATCAT Data from Web into Pandas Dataframe"""
     st = SpaceTrackClient(username, password)
     
-    csvfile = st.satcat(format='csv')
+    csvfile = st.satcat(format='csv', limit=1000)
     with open('satcatdata.csv', 'w') as my_file:
         my_file.write(csvfile)
     df = pd.read_csv('satcatdata.csv')
@@ -28,7 +28,9 @@ def clean_df(df: pd.DataFrame) -> pd.DataFrame:
 
 @task(log_prints = True)
 def write_local(df: pd.DataFrame) -> Path:
-    path = Path('data/satcatdata/satcatdata.csv')
+    print(subprocess.check_output("pwd", shell=True).decode().strip())
+    # path = Path('.../app/data/satcatdata/satcatdata.csv')
+    path = os.path.abspath('/app/data/satcatdata/satcatdata.csv')
     df.to_csv(path, compression='gzip')
     return path
 
@@ -38,7 +40,7 @@ def write_gcs(path: Path) -> None:
     gcp_block = GcsBucket.load("satproject-storage-bucket")
     gcp_block.upload_from_path( # type: ignore
         from_path = path,
-        to_path = path
+        to_path = 'data/satcatdata.satcatdata.csv'
     )
     return
 

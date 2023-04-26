@@ -1,0 +1,38 @@
+###
+### A complete description of a Prefect Deployment for flow 'pipeline'
+###
+name: satcat pipeline
+description: null
+version: c82a39eb82a89b4119278879a0bba0fa
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+tags: []
+parameters: {}
+schedule: 
+  cron: "0 1 * * */2"
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: pipeline
+manifest_path: null
+storage: null
+path: /app/prefect/flows
+entrypoint: pipeline.py:pipeline
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
