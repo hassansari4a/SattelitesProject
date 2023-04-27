@@ -4,7 +4,7 @@ This is an end-to-end data engineering project, This project uses [Space-track](
 
 ## Problem Description
 
-The purpose of this project is to make an end-to-end data pipeline that extracts satellite data from [Space-track](https://www.space-track.org/)'s web API and loads this data in Google Cloud Storage and Big Query, apply Kimbal's Dimensional Modeling(Fact and Dimension tables) to the data using dbt and visualize the transformed data using Looker Studio.
+The purpose of this project is to make an end-to-end data pipeline that extracts satellite data from [Space-track](https://www.space-track.org/)'s web API and loads this data in Google Cloud Storage and Big Query, apply Kimball Dimensional Modeling(Fact and Dimension tables) to the data using dbt and visualize the transformed data using Looker Studio.
 
 ## Technology Stack
 
