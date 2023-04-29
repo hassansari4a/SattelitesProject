@@ -1,10 +1,14 @@
-# Satellite Project
+# SATELLITEX
 
 This is an end-to-end data engineering project, This project uses [Space-track](https://www.space-track.org/)'s Satellite Catalog dataset.
 
 ## Problem Description
 
 The purpose of this project is to make an end-to-end data pipeline that extracts satellite data from [Space-track](https://www.space-track.org/)'s web API and loads this data in Google Cloud Storage and Big Query, apply Kimball Dimensional Modeling(Fact and Dimension tables) to the data using dbt and visualize the transformed data using Looker Studio.
+
+## Dashboard
+Check out the interactive dashboard [here](https://lookerstudio.google.com/reporting/9cb38815-937c-4bf6-909d-50074cb9aa0d).
+![satellitex_dashboard.png](/images/satellitex_dashboard.png)
 
 ## Technology Stack
 
@@ -46,3 +50,46 @@ The following technologies are used to build this project.
 | inclination | The angle between the equator and the orbit plane |
 | perigee | Point in the orbit where an Earth satellite is closest to the Earth. Units are kilometers |
 | file | The unique identifying number of the source file for a particular object's data - higher numbers are more recent uploads |
+
+## Prerequisites
+- [Docker](https://www.docker.com/)
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/install#installation_instructions)
+- [Terraform](https://developer.hashicorp.com/terraform/downloads?product_intent=terraform)
+- 
+
+## Reproduce it yourself
+
+1. Clone this repository in your local environment
+```bash
+git clone https://github.com/hassansari4a/SattelitesProject.git
+```
+2. Set up your Google Cloud environment
+	- Create a GCP Project
+	- Configure Identity and Access Management (IAM) for the service account, giving it the following privileges:
+		- Viewer
+		- Storage Admin
+		- Storage Object Admin
+		- BigQuery Admin
+	- Create a key and download the JSON credentials
+	- Let the  [environment variable point to your GCP key](https://cloud.google.com/docs/authentication/application-default-credentials#GAC), authenticate it and refresh the session token
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=<path_to_your_credentials.json>
+gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
+gcloud auth application-default login
+```
+3. Setup your infrastructure
+	- Change the [variables.tf](/terraform/variables.tf) file with your corresponding variables, I would recommend to leave the name of the dataset, table and bucket as they are; otherwise you need to change them in the prefect flows and dbt.
+	- Run the following Terraform commands:
+	```bash
+	terraform init
+	terraform plan
+	terraform apply
+	```
+4. Setup your orchestration
+	-	Sign-up for Prefect Cloud and create a workspace [here](https://app.prefect.cloud/auth/login)
+	-	Create a `.env` file in the root folder of the project
+	-	Head over to settings and create an API Key and save it in the `.env` file, like so:
+	`PREFECT_CLOUD_API_KEY=<your-prefect-cloud-api-key>`
+	- Also save the workspace name in the `.env` 
+	`PREFECT_WORKSPACE=<your-prefect-cloud-workspace>`
+
