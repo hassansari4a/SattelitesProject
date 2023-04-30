@@ -16,4 +16,6 @@ Before that, head over to your Prefect Cloud settings and create an API key.
 ```
 PREFECT_CLOUD_API_KEY=<your-prefect-cloud-api-key>
 PREFECT_WORKSPACE=<your-prefect-cloud-workspace>
+
+SERVICE_ACCOUNT_CREDENTIALS_GCP=<your-service-account-credentials-json>
 ```
