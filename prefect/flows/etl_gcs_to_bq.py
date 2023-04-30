@@ -11,7 +11,7 @@ import schema
 def extract_from_gcs() -> Path:
     gcs_path = f"data/satcatdata/satcatdata.csv"
     gcs_block = GcsBucket.load("satproject-storage-bucket")
-    local_path = path = os.path.abspath('/app/data/tmp')
+    local_path = os.path.abspath('/app/data/tmp')
     gcs_block.get_directory(from_path = gcs_path, local_path = local_path)
     return Path(f"{local_path}/{gcs_path}")
 
