@@ -87,9 +87,9 @@ gcloud auth application-default login
 	```
 4. Setup your orchestration
 	-	Sign-up for Prefect Cloud and create a workspace [here](https://app.prefect.cloud/auth/login)
-	-	Create a `.env` file in the root folder of the project
-	-	Head over to settings and create an API Key and save it in the `.env` file, like so:
-	`PREFECT_CLOUD_API_KEY=<your-prefect-cloud-api-key>`
-	- Also save the workspace name in the `.env` 
-	`PREFECT_WORKSPACE=<your-prefect-cloud-workspace>`
+	- Add the JSON contents of your IAM service account in [this file](/prefect/blocks/prefect-blocks.py)
+5. Set up dbt
+	- Sign-up for dbt Cloud and create a project [here](https://cloud.getdbt.com/login/)
+	- Create your BigQuery connection and change the development environment dataset to `staging`
+6. [Create environment files](/examples/README.md)
 
