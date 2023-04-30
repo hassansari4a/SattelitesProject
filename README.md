@@ -87,9 +87,18 @@ gcloud auth application-default login
 	```
 4. Setup your orchestration
 	-	Sign-up for Prefect Cloud and create a workspace [here](https://app.prefect.cloud/auth/login)
-	- Add the JSON contents of your IAM service account in [this file](/prefect/blocks/prefect-blocks.py)
 5. Set up dbt
-	- Sign-up for dbt Cloud and create a project [here](https://cloud.getdbt.com/login/)
-	- Create your BigQuery connection and change the development environment dataset to `staging`
+
 6. [Create environment files](/examples/README.md)
 
+7. Build your docker image:
+```bash
+docker build --build-arg PREFECT_CLOUD_API_KEY=$(cat .env | grep PREFECT_CLOUD_API_KEY | cut -d= -f2) \
+--build-arg PREFECT_WORKSPACE=$(cat .env | grep PREFECT_WORKSPACE | cut -d= -f2) \
+--build-arg SERVICE_ACCOUNT_CREDENTIALS_GCP=$(cat .env | grep SERVICE_ACCOUNT_CREDENTIALS_GCP | cut -d= -f2) \
+-t <your-image-name>:<tag> .
+```
+8. Run the docker image:
+```bash
+docker run --platform linux/amd64 -it <your-image-name>:<tag>
+```
