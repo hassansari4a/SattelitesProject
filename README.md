@@ -70,7 +70,7 @@ git clone https://github.com/hassansari4a/SattelitesProject.git
 		- Storage Admin
 		- Storage Object Admin
 		- BigQuery Admin
-	- Create a key and download the JSON credentials
+	- Create a key and download the JSON credentials and save it in your project root folder as `credentials.json`
 	- Let the  [environment variable point to your GCP key](https://cloud.google.com/docs/authentication/application-default-credentials#GAC), authenticate it and refresh the session token
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=<path_to_your_credentials.json>
