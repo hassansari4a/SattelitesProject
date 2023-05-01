@@ -13,7 +13,11 @@ def get_satcat_data(username: str, password: str) -> pd.DataFrame:
     """Read SATCAT Data from Web into Pandas Dataframe"""
     st = SpaceTrackClient(username, password)
     
+<<<<<<< HEAD
     csvfile = st.satcat(format='csv', limit=1000)
+=======
+    csvfile = st.satcat(format='csv')
+>>>>>>> 6468b9b973dd54b26cfffd6f3cd12fd61693c2f8
     with open('satcatdata.csv', 'w') as my_file:
         my_file.write(csvfile)
     df = pd.read_csv('satcatdata.csv')
@@ -48,7 +52,11 @@ def write_gcs(path: Path) -> None:
 def etl_web_to_gcs() -> None:
     """The Main ETL Function"""
     config = configparser.ConfigParser()
+<<<<<<< HEAD
     config.read('config.ini')
+=======
+    config.read(os.path.abspath('/app/config.ini'))
+>>>>>>> 6468b9b973dd54b26cfffd6f3cd12fd61693c2f8
 
     df = get_satcat_data(config['spacetrack']['username'], config['spacetrack']['password'])
     # df = pd.read_csv('prefect/flows/satcatdata.csv')

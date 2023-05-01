@@ -11,7 +11,11 @@ models:
       - type: primary_key
         columns: [object_id]
         name: primary_key_constraint_object
+<<<<<<< HEAD
   - name: fact_satcat
+=======
+  - name: fact_sastcat
+>>>>>>> 6468b9b973dd54b26cfffd6f3cd12fd61693c2f8
     constraints:
       - type: primary_key
         columns: [sat_id]

@@ -6,3 +6,8 @@ terraform/.terraform
 terraform/.terraform.lock.hcl
 
 config.ini
+<<<<<<< HEAD
+=======
+
+*.json
+>>>>>>> 6468b9b973dd54b26cfffd6f3cd12fd61693c2f8

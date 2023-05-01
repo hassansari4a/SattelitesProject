@@ -11,7 +11,11 @@ import schema
 def extract_from_gcs() -> Path:
     gcs_path = f"data/satcatdata/satcatdata.csv"
     gcs_block = GcsBucket.load("satproject-storage-bucket")
+<<<<<<< HEAD
     local_path = path = os.path.abspath('/app/data/tmp')
+=======
+    local_path = os.path.abspath('/app/data/tmp')
+>>>>>>> 6468b9b973dd54b26cfffd6f3cd12fd61693c2f8
     gcs_block.get_directory(from_path = gcs_path, local_path = local_path)
     return Path(f"{local_path}/{gcs_path}")
 
@@ -26,7 +30,11 @@ def read_data(path: Path) -> pd.DataFrame:
 @task()
 def write_bq(df: pd.DataFrame, table_schema: list[dict[str, str]]) -> None:
     """Write Dataframe into BigQuery"""
+<<<<<<< HEAD
     gcp_credentials_block = GcpCredentials.load("sat-gcp-credendials")
+=======
+    gcp_credentials_block = GcpCredentials.load("sat-gcp-credentials")
+>>>>>>> 6468b9b973dd54b26cfffd6f3cd12fd61693c2f8
 
     df.to_gbq(
         destination_table= "sat_data_all.satcatdata",
