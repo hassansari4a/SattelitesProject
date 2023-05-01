@@ -6,3 +6,5 @@ terraform/.terraform
 terraform/.terraform.lock.hcl
 
 config.ini
+
+*.json

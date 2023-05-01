@@ -26,7 +26,7 @@ def read_data(path: Path) -> pd.DataFrame:
 @task()
 def write_bq(df: pd.DataFrame, table_schema: list[dict[str, str]]) -> None:
     """Write Dataframe into BigQuery"""
-    gcp_credentials_block = GcpCredentials.load("sat-gcp-credendials")
+    gcp_credentials_block = GcpCredentials.load("sat-gcp-credentials")
 
     df.to_gbq(
         destination_table= "sat_data_all.satcatdata",
