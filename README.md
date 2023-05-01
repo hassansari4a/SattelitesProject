@@ -95,7 +95,6 @@ gcloud auth application-default login
 ```bash
 docker build --build-arg PREFECT_CLOUD_API_KEY=$(cat .env | grep PREFECT_CLOUD_API_KEY | cut -d= -f2) \
 --build-arg PREFECT_WORKSPACE=$(cat .env | grep PREFECT_WORKSPACE | cut -d= -f2) \
---build-arg SERVICE_ACCOUNT_CREDENTIALS_GCP=$(cat .env | grep SERVICE_ACCOUNT_CREDENTIALS_GCP | cut -d= -f2) \
 -t <your-image-name>:<tag> .
 ```
 8. Run the docker image:
