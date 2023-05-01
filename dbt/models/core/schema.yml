@@ -11,7 +11,7 @@ models:
       - type: primary_key
         columns: [object_id]
         name: primary_key_constraint_object
-  - name: fact_sastcat
+  - name: fact_satcat
     constraints:
       - type: primary_key
         columns: [sat_id]
