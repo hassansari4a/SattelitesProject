@@ -1,5 +1,13 @@
 {{ config(materialized="view") }}
 
+with satdata as 
+(
+  select *,
+    row_number() over(partition by intldes, norad_cat_id) as rn
+  from {{ source('staging','satcatdata') }}
+  where intldes is not null 
+)
+
 select
     {{ dbt_utils.surrogate_key(['intldes', 'norad_cat_id'])}} as sat_id,
     cast(intldes as string) as intldes_id,
@@ -23,4 +31,5 @@ select
     cast(object_name as string) as object_name,
     cast(object_id as string) as object_id,
     cast(object_number as integer) as object_number
-from {{ source("staging", "satcatdata") }}
+from satdata
+where rn=1

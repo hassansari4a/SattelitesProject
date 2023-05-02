@@ -7,3 +7,13 @@ sources:
 
     tables:
       - name: satcatdata
+
+models:
+  - name: stg_satcatdata
+    columns:
+      - name: sat_id
+        tests:
+          - unique:
+              severity: warn
+          - not_null:
+              severity: warn
