@@ -34,7 +34,7 @@ def write_bq(df: pd.DataFrame, table_schema: list[dict[str, str]]) -> None:
         credentials= gcp_credentials_block.get_credentials_from_service_account(),
         chunksize= 500_000,
         table_schema= table_schema,
-        if_exists= "append"
+        if_exists= "replace"
     )
 
 @flow()
